@@ -27,10 +27,10 @@ def GetQuote(ticker="GME",start = "2018-01-01" ,end=str(date.today())):
     return df
 
 
-# In[3]:
+# In[39]:
 
 
-def RelativeStrengthIndex(data, num):
+def RelativeStrengthIndex(data, num=14):
     
     """
     """
@@ -94,11 +94,14 @@ def RelativeStrengthIndex(data, num):
             result[data_keys[x]] = round(rsi, 2)    
       
         last_price = data_list[x]
+    
+    result = pd.DataFrame(result.items(), columns=['Date', "RSI"+str(num)])
+    result.set_index('Date',inplace=True)
         
     return result
 
 
-# In[4]:
+# In[49]:
 
 
 def macdIndex(data,shortSpan=12,longSpan=26,singalSpan=9):
@@ -116,13 +119,27 @@ def macdIndex(data,shortSpan=12,longSpan=26,singalSpan=9):
     #Calcualte the signal line (exp weighted)
     signal = MACD.ewm(span=singalSpan, adjust=False).mean()
     
-    return signal,MACD
+    signal = signal.to_frame()
+    signal.columns = ['SigMACD_'+str(shortSpan)+"_"+str(longSpan)+"_"+str(singalSpan)]
+    MACD = MACD.to_frame()
+    MACD.columns = ['MACD']
+    
+    
+    return signal#,MACD
 
 
-# In[5]:
+# In[53]:
 
 
 # df = GetQuote()
-# RelativeStrengthIndex(df, 14)
-# macdIndex(df)
+# RSI_TEST= RelativeStrengthIndex(df, 14)
+# RSI_TEST.head()
+# MACD_TEST = macdIndex(df)
+# MACD_TEST.tail()
+
+
+# In[ ]:
+
+
+
 
